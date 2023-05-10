@@ -159,37 +159,43 @@ public class MainActivity extends AppCompatActivity {
                 call.enqueue(new Callback<ResponseMessage>() {
                     @Override
                     public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
-                        assert response.body() !=null;
-                        String cookie = response.headers().get("Set-Cookie");
-                        String day = get_eng_dayOfWeek(s);
-                        Call<LessonMessage> lesson = userService.lessons(cookie, day);
-                        lesson.enqueue(new Callback<LessonMessage>() {
-                            @Override
-                            public void onResponse(Call<LessonMessage> call, Response<LessonMessage> response) {
-                                if(response.body() == null){
-                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                    startActivity(intent);
-                                }
-                                String[] timeTable = new String[10];
-                                String classes = response.body().data.get(0);
-                                for(int i = 1; i < response.body().data.size(); i++){
-                                    timeTable[i - 1] = response.body().data.get(i);
-                                }
-                                setTimeTable(timeTable, classes);
+                        if(response.body() == null){
+                            Toast.makeText(
+                                    getApplicationContext(),
+                                    "Войдите в систему",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        } else {
+                            String cookie = response.headers().get("Set-Cookie");
+                            String day = get_eng_dayOfWeek(s);
+                            Call<LessonMessage> lesson = userService.lessons(cookie, day);
+                            lesson.enqueue(new Callback<LessonMessage>() {
+                                @Override
+                                public void onResponse(Call<LessonMessage> call, Response<LessonMessage> response) {
+                                    if (response.body() == null) {
+                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                        startActivity(intent);
+                                    }
+                                    String[] timeTable = new String[10];
+                                    String classes = response.body().data.get(0);
+                                    for (int i = 1; i < response.body().data.size(); i++) {
+                                        timeTable[i - 1] = response.body().data.get(i);
+                                    }
+                                    setTimeTable(timeTable, classes);
 //                                Intent toMainWithLessons = new Intent(getApplicationContext(), MainActivity.class);
 //                                toMainWithLessons.putExtra("timetable", timeTable);
 //                                toMainWithLessons.putExtra("classes", classes);
 //                                toMainWithLessons.putExtra("session", "xdxd");
 //                                toMainWithLessons.putExtra("logins", logins);
 //                                startActivity(toMainWithLessons);
-                            }
+                                }
 
-                            @Override
-                            public void onFailure(Call<LessonMessage> call, Throwable t) {
+                                @Override
+                                public void onFailure(Call<LessonMessage> call, Throwable t) {
 
-                            }
-                        });
-
+                                }
+                            });
+                        }
 
 
 //                    присвоить всем textview из ids текст из timetable
@@ -221,31 +227,37 @@ public class MainActivity extends AppCompatActivity {
                 call.enqueue(new Callback<ResponseMessage>() {
                     @Override
                     public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
-                        assert response.body() !=null;
-                        String cookie = response.headers().get("Set-Cookie");
-                        String day = get_eng_dayOfWeek(s);
-                        Call<LessonMessage> lesson = userService.lessons(cookie, day);
-                        lesson.enqueue(new Callback<LessonMessage>() {
-                            @Override
-                            public void onResponse(Call<LessonMessage> call, Response<LessonMessage> response) {
-                                if(response.body() == null){
-                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                    startActivity(intent);
+                        if(response.body() == null){
+                            Toast.makeText(
+                                    getApplicationContext(),
+                                    "Войдите в систему",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        } else {
+                            String cookie = response.headers().get("Set-Cookie");
+                            String day = get_eng_dayOfWeek(s);
+                            Call<LessonMessage> lesson = userService.lessons(cookie, day);
+                            lesson.enqueue(new Callback<LessonMessage>() {
+                                @Override
+                                public void onResponse(Call<LessonMessage> call, Response<LessonMessage> response) {
+                                    if (response.body() == null) {
+                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                        startActivity(intent);
+                                    }
+                                    String[] timeTable = new String[10];
+                                    String classes = response.body().data.get(0);
+                                    for (int i = 1; i < response.body().data.size(); i++) {
+                                        timeTable[i - 1] = response.body().data.get(i);
+                                    }
+                                    setTimeTable(timeTable, classes);
                                 }
-                                String[] timeTable = new String[10];
-                                String classes = response.body().data.get(0);
-                                for(int i = 1; i < response.body().data.size(); i++){
-                                    timeTable[i - 1] = response.body().data.get(i);
+
+                                @Override
+                                public void onFailure(Call<LessonMessage> call, Throwable t) {
+
                                 }
-                                setTimeTable(timeTable, classes);
-                            }
-
-                            @Override
-                            public void onFailure(Call<LessonMessage> call, Throwable t) {
-
-                            }
-                        });
-
+                            });
+                        }
 
 
 //                    присвоить всем textview из ids текст из timetable
