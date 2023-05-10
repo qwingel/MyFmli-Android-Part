@@ -5,12 +5,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weight="1"
+            android:background="@drawable/background_gradient"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/replaceLesson"
+                android:layout_width="140sp"
+                android:layout_height="60sp"
+                android:layout_marginStart="0sp"
+                android:layout_marginTop="0sp"
+                android:background="@android:color/transparent"
+                android:visibility="invisible"
+                android:text="replace"
+                android:textSize="16sp"
+                android:textColor="@color/purple_200"/>
 
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/logoutbut"
+                android:layout_width="140sp"
+                android:layout_height="60sp"
+                android:layout_marginTop="0sp"
+                android:background="@android:color/transparent"
+                android:text="Logout"
+                android:textSize="16sp"
+                android:textColor="@color/purple_200"
+                android:visibility="gone"/>
+
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/loginBut"
+                android:layout_width="140sp"
+                android:layout_height="60sp"
+                android:layout_marginTop="0sp"
+                android:background="@android:color/transparent"
+                android:visibility="visible"
+                android:text="Login"
+                android:textSize="16sp"
+                android:textColor="@color/purple_200"/>
+        </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="61sp"
         android:orientation="horizontal"
-        android:layout_marginTop="61sp"
+        android:weight="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -50,59 +100,35 @@
             app:layout_constraintStart_toEndOf="parent" />
 
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="61sp"
-        android:layout_marginStart="0sp"
-        android:background="@drawable/background_gradient"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <Button
-            android:layout_weight="1"
-            android:id="@+id/replaceLesson"
-            android:layout_width="140sp"
-            android:layout_height="60sp"
-            android:layout_marginStart="0sp"
-            android:layout_marginTop="0sp"
-            android:background="@android:color/transparent"
-            android:visibility="invisible"
-            android:text="replace"
-            android:textSize="16sp"
-            android:textColor="@color/purple_200"/>
-
-        <Button
-            android:layout_weight="1"
-            android:id="@+id/logoutbut"
-            android:layout_width="140sp"
-            android:layout_height="60sp"
-            android:layout_marginTop="0sp"
-            android:background="@android:color/transparent"
-            android:text="Logout"
-            android:textSize="16sp"
-            android:textColor="@color/purple_200"
-            android:visibility="gone"/>
-
-        <Button
-            android:layout_weight="1"
-            android:id="@+id/loginBut"
-            android:layout_width="140sp"
-            android:layout_height="60sp"
-            android:layout_marginTop="0sp"
-            android:background="@android:color/transparent"
-            android:visibility="visible"
-            android:text="Login"
-            android:textSize="16sp"
-            android:textColor="@color/purple_200"/>
-    </LinearLayout>
-
-    <TableLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="25"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="8">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="6">
+            </LinearLayout>
+        <TableLayout
         android:id="@+id/timeTable"
         android:layout_width="316sp"
         android:layout_height="520sp"
-        android:layout_marginStart="44sp"
-        android:layout_marginTop="160sp"
+        android:layout_weight="1"
         android:background="@drawable/main_tablebackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -322,5 +348,19 @@
 <!--                android:textStyle="bold" />-->
         </TableRow>
     </TableLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="6">
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="25">
+        </LinearLayout>
+    </LinearLayout>
+    </LinearLayout>
 
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
