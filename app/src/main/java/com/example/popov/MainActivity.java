@@ -37,13 +37,35 @@ public class MainActivity extends AppCompatActivity {
     int[] ids = new int[] {R.id.a1, R.id.a2, R.id.a3, R.id.a4, R.id.a5, R.id.a6, R.id.a7, R.id.a8, R.id.a9, R.id.a10};
 //            R.id.a11, R.id.a12, R.id.a13, R.id.a14, R.id.a15, R.id.a16, R.id.a17, R.id.a18, R.id.a19, R.id.a20 };
 
-    public String get_dayOfWeek(int N){
+    public String get_rus_dayOfWeek(int N){
         N = (6 + ((N - 1) % 6)) % 6;
         String [] arr_dayOfWeek = {"Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота" };
         return arr_dayOfWeek[N];
     }
 
-    public static final String SQurl = "http://urll";
+    public String get_eng_dayOfWeek(int N) {
+        N = (6 + ((N - 1) % 6)) % 6;
+        String[] arr_dayOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        return arr_dayOfWeek[N];
+    }
+
+    public void setTimeTable(String[] timeTable, String classes){
+        if(timeTable == null){
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Войдите в систему",
+                    Toast.LENGTH_LONG
+            );
+        } else {
+            TextView classesText = (TextView) findViewById(R.id.classes);
+            classesText.setText(classes);
+            for(int i = 0; i < timeTable.length; i++){
+                TextView textview = (TextView) findViewById(ids[i]);
+                textview.setText(timeTable[i]);
+            }
+        }
+    }
+    public static final String SQurl = "http://10.222.149.95";
 
     public static class ResponseMessage {
         public String status, message;
@@ -81,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         @POST("/login")
         Call<ResponseMessage> login(@Body LoginRequest loginRequest);
         @POST("/lessons")
-        Call<LessonMessage> lessons(@Header("Cookie") String cookie);
+        Call<LessonMessage> lessons(@Header("Cookie") String cookie, @Body String dayOfWeek);
 
         @GET("/logout")
         Call<ResponseMessage> logout();
@@ -109,27 +131,12 @@ public class MainActivity extends AppCompatActivity {
         String logins = intent.getStringExtra("login");
         String password = intent.getStringExtra("password");
         String session = intent.getStringExtra("session");
-        String classes = intent.getStringExtra("classes");
+//        String classes = intent.getStringExtra("classes");
 
-        String[] timeTable = intent.getStringArrayExtra("timetable");
+//        String[] timeTable = intent.getStringArrayExtra("timetable");
 
-        if(timeTable == null){
-            Toast.makeText(
-                    getApplicationContext(),
-                    "Войдите в систему",
-                    Toast.LENGTH_LONG
-            );
-        } else {
-            TextView classesText = (TextView) findViewById(R.id.classes);
-            classesText.setText(classes);
-            for(int i = 0; i < timeTable.length; i++){
-                TextView textview = (TextView) findViewById(ids[i]);
-                textview.setText(timeTable[i]);
-            }
-        }
-
-        h_beforeDay.setText(get_dayOfWeek(dayOfWeek - 1));
-        h_nextDay.setText(get_dayOfWeek(dayOfWeek + 1));
+        h_beforeDay.setText(get_rus_dayOfWeek(dayOfWeek - 1));
+        h_nextDay.setText(get_rus_dayOfWeek(dayOfWeek + 1));
 
         if(session != null /*&& !session.equals("Войдите в систему")*/) {
             login.setVisibility(View.GONE);
@@ -149,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 s++;
-                String nextDayText = get_dayOfWeek(s + 1);
-                String beforeDayText = get_dayOfWeek(s - 1);
+                String nextDayText = get_rus_dayOfWeek(s + 1);
+                String beforeDayText = get_rus_dayOfWeek(s - 1);
 
 
                 h_nextDay.setText(nextDayText);
@@ -166,9 +173,12 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
                         if(response.body() == null){
                             System.out.println(response.body());
+                            System.out.println("123");
                         }
                         String cookie = response.headers().get("Set-Cookie");
-                        Call<LessonMessage> lesson = userService.lessons(cookie);
+                        String day = get_eng_dayOfWeek(s);
+                        System.out.println(day);
+                        Call<LessonMessage> lesson = userService.lessons(cookie, day);
                         lesson.enqueue(new Callback<LessonMessage>() {
                             @Override
                             public void onResponse(Call<LessonMessage> call, Response<LessonMessage> response) {
@@ -179,15 +189,16 @@ public class MainActivity extends AppCompatActivity {
                                 String[] timeTable = new String[10];
                                 System.out.println(response.body().data.get(0));
                                 String classes = response.body().data.get(0);
-                                for(int i = 1; i < 11; i++){
+                                for(int i = 1; i < response.body().data.size(); i++){
                                     timeTable[i - 1] = response.body().data.get(i);
                                 }
-                                Intent toMainWithLessons = new Intent(getApplicationContext(), MainActivity.class);
-                                toMainWithLessons.putExtra("timetable", timeTable);
-                                toMainWithLessons.putExtra("classes", classes);
-                                toMainWithLessons.putExtra("session", "xdxd");
-                                toMainWithLessons.putExtra("logins", logins);
-                                startActivity(toMainWithLessons);
+                                setTimeTable(timeTable, classes);
+//                                Intent toMainWithLessons = new Intent(getApplicationContext(), MainActivity.class);
+//                                toMainWithLessons.putExtra("timetable", timeTable);
+//                                toMainWithLessons.putExtra("classes", classes);
+//                                toMainWithLessons.putExtra("session", "xdxd");
+//                                toMainWithLessons.putExtra("logins", logins);
+//                                startActivity(toMainWithLessons);
                             }
 
                             @Override
@@ -211,13 +222,12 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
-
         h_beforeDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 s--;
-                String beforeDayText = get_dayOfWeek(s - 1);
-                String nextDayText = get_dayOfWeek(s + 1);
+                String beforeDayText = get_rus_dayOfWeek(s - 1);
+                String nextDayText = get_rus_dayOfWeek(s + 1);
                 h_beforeDay.setText(beforeDayText);
                 h_nextDay.setText(nextDayText);
                 Retrofit retrofit = new Retrofit.Builder().baseUrl(SQurl)
@@ -230,7 +240,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
                         assert response.body() !=null;
                         String cookie = response.headers().get("Set-Cookie");
-                        Call<LessonMessage> lesson = userService.lessons(cookie);
+                        String day = get_eng_dayOfWeek(s);
+                        Call<LessonMessage> lesson = userService.lessons(cookie, day);
                         lesson.enqueue(new Callback<LessonMessage>() {
                             @Override
                             public void onResponse(Call<LessonMessage> call, Response<LessonMessage> response) {

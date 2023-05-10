@@ -11,7 +11,7 @@
         android:id="@+id/loginlayout"
         android:layout_width="380dp"
         android:layout_height="285dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="108dp"
         android:background="@drawable/login_box_background"
         android:orientation="vertical"
@@ -48,7 +48,7 @@
         android:id="@+id/loginbutslayout"
         android:layout_width="277dp"
         android:layout_height="187dp"
-        android:layout_marginStart="85dp"
+        android:layout_marginStart="67dp"
         android:layout_marginTop="450dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,8 +60,8 @@
             android:layout_height="100dp"
             android:background="@drawable/loginbut"
             android:text="Login"
-            android:textSize="20dp"
             android:textColor="@color/purple_200"
+            android:textSize="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

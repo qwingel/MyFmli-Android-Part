@@ -28,7 +28,7 @@ public class Login extends AppCompatActivity {
     String session, Access;
 
 
-    public static final String SQurl = "urll";
+    public static final String SQurl = "http://10.222.149.95";
 
     public static class ResponseMessage {
         public String status, message;
@@ -103,43 +103,53 @@ public class Login extends AppCompatActivity {
                     public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
                         System.out.println(response.headers());
                         if(response.body() != null){
-                            String login = response.body().message;
-                            Toast.makeText(
-                                    getApplicationContext(),
-                                    response.body().status,
-                                    Toast.LENGTH_LONG
-                            ).show();
+                            if(response.body().status == "failed"){
+                                Toast.makeText(
+                                        getApplicationContext(),
+                                        response.body().message,
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            } else {
+                                String login = response.body().message;
+                                Toast.makeText(
+                                        getApplicationContext(),
+                                        response.body().status,
+                                        Toast.LENGTH_LONG
+                                ).show();
 
-                            access.enqueue(new Callback<ResponseMessage>() {
-                                @Override
-                                public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
-                                    String Access = response.body().message;
+                                access.enqueue(new Callback<ResponseMessage>() {
+                                    @Override
+                                    public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+                                        if(response.body() != null) {
+                                            String Access = response.body().message;
 
-                                    inSession.enqueue(new Callback<ResponseMessage>() {
-                                        @Override
-                                        public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
-                                            String session = response.body().message;
+                                            inSession.enqueue(new Callback<ResponseMessage>() {
+                                                @Override
+                                                public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+                                                    String session = response.body().message;
 
-                                            Intent toMainWithLogin = new Intent(getApplicationContext(), MainActivity.class);
-                                            toMainWithLogin.putExtra("login", login);
-                                            toMainWithLogin.putExtra("access", Access);
-                                            toMainWithLogin.putExtra("session", session);
-                                            toMainWithLogin.putExtra("password", password);
-                                            startActivity(toMainWithLogin);
+                                                    Intent toMainWithLogin = new Intent(getApplicationContext(), MainActivity.class);
+                                                    toMainWithLogin.putExtra("login", login);
+                                                    toMainWithLogin.putExtra("access", Access);
+                                                    toMainWithLogin.putExtra("session", session);
+                                                    toMainWithLogin.putExtra("password", password);
+                                                    startActivity(toMainWithLogin);
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<ResponseMessage> call, Throwable t) {
+                                                    t.printStackTrace();
+                                                }
+                                            });
                                         }
+                                    }
 
-                                        @Override
-                                        public void onFailure(Call<ResponseMessage> call, Throwable t) {
-                                            t.printStackTrace();
-                                        }
-                                    });
-                                }
-
-                                @Override
-                                public void onFailure(Call<ResponseMessage> call, Throwable t) {
-                                    t.printStackTrace();
-                                }
-                            });
+                                    @Override
+                                    public void onFailure(Call<ResponseMessage> call, Throwable t) {
+                                        t.printStackTrace();
+                                    }
+                                });
+                            }
                         } else {
                             Toast.makeText(
                                     getApplicationContext(),
