@@ -1,16 +1,12 @@
 package com.example.popov;
 
-import android.app.Application;
 import android.os.Bundle;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import java.lang.reflect.Array;
 
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -18,17 +14,16 @@ import retrofit2.Retrofit;
 import retrofit2.Call;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public class Login extends AppCompatActivity {
 
     EditText loginText, passText;
     Button toLogin, toCancel;
-    String session, Access;
+    //String session, Access;
 
 
-    public static final String SQurl = "http://10.222.149.95";
+    public static final String SQurl = "http://192.168.43.40";
 
     public static class ResponseMessage {
         public String status, message;
@@ -101,7 +96,6 @@ public class Login extends AppCompatActivity {
                 inSystem.enqueue(new Callback<ResponseMessage>() {
                     @Override
                     public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
-                        System.out.println(response.headers());
                         if(response.body() != null){
                             if(response.body().status == "failed"){
                                 Toast.makeText(

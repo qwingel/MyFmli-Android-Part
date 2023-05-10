@@ -2,21 +2,13 @@ package com.example.popov;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -28,9 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 public class MainActivity extends AppCompatActivity {
     int s = 0;
@@ -65,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public static final String SQurl = "http://10.222.149.95";
+    public static final String SQurl = "http://192.168.43.40";
 
     public static class ResponseMessage {
         public String status, message;
@@ -144,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
 
 //            logout.setText(logins);
 
-            System.out.println(access);
-            System.out.println(session);
            /* if (access.equals("ACCESS_LEVEL_ADMIN") || access.equals("ACCESS_LEVEL_TEACHER")){
                 replace.setVisibility(View.VISIBLE);
             }*/
@@ -171,13 +159,9 @@ public class MainActivity extends AppCompatActivity {
                 call.enqueue(new Callback<ResponseMessage>() {
                     @Override
                     public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
-                        if(response.body() == null){
-                            System.out.println(response.body());
-                            System.out.println("123");
-                        }
+                        assert response.body() !=null;
                         String cookie = response.headers().get("Set-Cookie");
                         String day = get_eng_dayOfWeek(s);
-                        System.out.println(day);
                         Call<LessonMessage> lesson = userService.lessons(cookie, day);
                         lesson.enqueue(new Callback<LessonMessage>() {
                             @Override
@@ -187,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                                 String[] timeTable = new String[10];
-                                System.out.println(response.body().data.get(0));
                                 String classes = response.body().data.get(0);
                                 for(int i = 1; i < response.body().data.size(); i++){
                                     timeTable[i - 1] = response.body().data.get(i);
@@ -245,8 +228,16 @@ public class MainActivity extends AppCompatActivity {
                         lesson.enqueue(new Callback<LessonMessage>() {
                             @Override
                             public void onResponse(Call<LessonMessage> call, Response<LessonMessage> response) {
-                                assert response.body() != null;
-                                System.out.println(response.body().data);
+                                if(response.body() == null){
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    startActivity(intent);
+                                }
+                                String[] timeTable = new String[10];
+                                String classes = response.body().data.get(0);
+                                for(int i = 1; i < response.body().data.size(); i++){
+                                    timeTable[i - 1] = response.body().data.get(i);
+                                }
+                                setTimeTable(timeTable, classes);
                             }
 
                             @Override
@@ -290,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 logout.setVisibility(View.INVISIBLE);
                 login.setVisibility(View.VISIBLE);
-                String[] timeTable = {"-" , "-", "-", "-", "-", "-", "-", "-", "-", "-"};
+                String[] timeTable = {"-", "-", "-", "-", "-", "-", "-", "-", "-", "-"};
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("timetable", timeTable);
                 startActivity(intent);
