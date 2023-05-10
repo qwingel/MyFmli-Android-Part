@@ -23,7 +23,7 @@ public class Login extends AppCompatActivity {
     //String session, Access;
 
 
-    public static final String SQurl = "http://192.168.43.40";
+    public static final String SQurl = ""; // link for requests
 
     public static class ResponseMessage {
         public String status, message;
