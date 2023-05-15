@@ -23,7 +23,7 @@ public class Login extends AppCompatActivity {
     //String session, Access;
 
 
-    public static final String SQurl = ""; // link for requests
+    public static final String SQurl = "http://195.2.75.224:2525"; // link for requests
 
     public static class ResponseMessage {
         public String status, message;
@@ -97,7 +97,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
                         if(response.body() != null){
-                            if(response.body().status == "failed"){
+                            if(response.body().status.equals("failed")){
                                 Toast.makeText(
                                         getApplicationContext(),
                                         response.body().message,

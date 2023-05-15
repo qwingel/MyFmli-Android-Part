@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public static final String SQurl = ""; // link for requests
+    public static final String SQurl = "http://195.2.75.224:2525"; // link for requests
 
     public static class ResponseMessage {
         public String status, message;
@@ -121,9 +121,53 @@ public class MainActivity extends AppCompatActivity {
         String logins = intent.getStringExtra("login");
         String password = intent.getStringExtra("password");
         String session = intent.getStringExtra("session");
-//        String classes = intent.getStringExtra("classes");
 
-//        String[] timeTable = intent.getStringArrayExtra("timetable");
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(SQurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UserService userService = retrofit.create(UserService.class);
+        Call<ResponseMessage> call = userService.login(new LoginRequest(logins, password));
+        call.enqueue(new Callback<ResponseMessage>() {
+            @Override
+            public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+                if(response.body() == null){
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Войдите в систему",
+                            Toast.LENGTH_LONG
+                    ).show();
+                } else {
+                    String cookie = response.headers().get("Set-Cookie");
+                    String day = get_eng_dayOfWeek(s);
+                    Call<LessonMessage> lesson = userService.lessons(cookie, day);
+                    lesson.enqueue(new Callback<LessonMessage>() {
+                        @Override
+                        public void onResponse(Call<LessonMessage> call, Response<LessonMessage> response) {
+                            if (response.body() == null) {
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                            }
+                            String[] timeTable = new String[10];
+                            String classes = response.body().data.get(0);
+                            for (int i = 1; i < response.body().data.size(); i++) {
+                                timeTable[i - 1] = response.body().data.get(i);
+                            }
+                            setTimeTable(timeTable, classes);
+                        }
+
+                        @Override
+                        public void onFailure(Call<LessonMessage> call, Throwable t) {
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseMessage> call, Throwable t) {
+
+            }
+        });
 
         h_beforeDay.setText(get_rus_dayOfWeek(dayOfWeek - 1));
         h_nextDay.setText(get_rus_dayOfWeek(dayOfWeek + 1));
@@ -182,12 +226,6 @@ public class MainActivity extends AppCompatActivity {
                                         timeTable[i - 1] = response.body().data.get(i);
                                     }
                                     setTimeTable(timeTable, classes);
-//                                Intent toMainWithLessons = new Intent(getApplicationContext(), MainActivity.class);
-//                                toMainWithLessons.putExtra("timetable", timeTable);
-//                                toMainWithLessons.putExtra("classes", classes);
-//                                toMainWithLessons.putExtra("session", "xdxd");
-//                                toMainWithLessons.putExtra("logins", logins);
-//                                startActivity(toMainWithLessons);
                                 }
 
                                 @Override
@@ -196,15 +234,10 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         }
-
-
-//                    присвоить всем textview из ids текст из timetable
-
                     }
 
                     @Override
                     public void onFailure(Call<ResponseMessage> call, Throwable t) {
-
                     }
                 });
                 }
@@ -258,10 +291,6 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         }
-
-
-//                    присвоить всем textview из ids текст из timetable
-
                     }
 
                     @Override
